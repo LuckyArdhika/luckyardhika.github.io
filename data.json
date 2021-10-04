@@ -1,0 +1,12 @@
+{
+    "country":[
+        {
+            "id":"ID",
+            "nama":"indonesia"
+        },
+        {
+            "id":"US",
+            "nama":"United States"
+        }
+    ]
+}
