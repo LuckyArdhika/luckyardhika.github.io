@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Ardhika | Fullstack Developer</title>
+    
+    <!-- Cute Fonts: Fredoka -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons (for UI elements) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Config for Custom Fonts -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Fredoka', 'sans-serif'],
+                        mono: ['Courier New', 'Courier', 'monospace'], // Added monospace for hacker CLI
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #FFF9E6;
+            color: #000;
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor */
+        }
+
+        /* Hide cursor on interactable elements so our custom wand takes over */
+        a, button, input, textarea, [role="button"], .cursor-none, canvas {
+            cursor: none !important;
+        }
+
+        ::selection {
+            background-color: #FFC900;
+            color: #000;
+        }
+
+        /* Hacker CLI Splash Screen Glitch Effect */
+        .glitch-out {
+            animation: glitch-die 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes glitch-die {
+            0% { filter: invert(0) hue-rotate(0deg); transform: scale(1) skewX(0deg); opacity: 1; }
+            20% { filter: invert(1) hue-rotate(90deg) contrast(2); transform: scale(1.02) skewX(15deg) translate(-10px, 5px); opacity: 0.9; }
+            40% { filter: invert(0) hue-rotate(-90deg) contrast(0.5); transform: scale(0.98) skewX(-20deg) translate(10px, -5px); opacity: 0.8; }
+            60% { filter: invert(1) contrast(3); transform: scale(1.05) skewY(10deg); opacity: 1; }
+            80% { filter: invert(0) blur(5px); transform: scale(1.1) translate(0, 20px); opacity: 0.5; }
+            100% { filter: blur(10px); transform: scale(1.5); opacity: 0; visibility: hidden; }
+        }
+
+        .scanlines {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* Neo-Brutalism Shadows */
+        .brutal-shadow {
+            box-shadow: 8px 8px 0px 0px rgba(0,0,0,1);
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .brutal-shadow:hover {
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+            transform: translate(4px, 4px);
+        }
+        
+        .brutal-shadow:active {
+            box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+            transform: translate(8px, 8px);
+        }
+
+        .brutal-shadow-static {
+            box-shadow: 8px 8px 0px 0px rgba(0,0,0,1);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .animate-float {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float-delayed {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(-3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .animate-float-delayed {
+            animation: float-delayed 4s ease-in-out infinite 1s;
+        }
+
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 12s linear infinite;
+        }
+
+        .pattern-bg {
+            background-image: radial-gradient(#000 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        /* Efek Gelombang Air (Water Ripple) */
+        .water-ripple {
+            position: absolute;
+            border-radius: 50%;
+            border: 4px solid #be185d; 
+            box-shadow: 0 0 10px rgba(190, 24, 93, 0.4), inset 0 0 10px rgba(190, 24, 93, 0.4);
+            transform: translate(-50%, -50%);
+            animation: ripple-expand 1s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        @keyframes ripple-expand {
+            0% {
+                width: 10px;
+                height: 10px;
+                opacity: 1;
+                border-width: 6px;
+            }
+            100% {
+                width: 250px;
+                height: 250px;
+                opacity: 0;
+                border-width: 0px;
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen relative">
+
+    <!-- Hacker CLI Splash Screen -->
+    <div id="hacker-splash" class="fixed inset-0 z-[100000] bg-[#0a0a0a] text-[#0f0] font-mono p-6 md:p-12 flex flex-col justify-start overflow-hidden pt-[10vh]">
+        <!-- Old TV Scanlines overlay -->
+        <div class="absolute inset-0 scanlines opacity-50 z-10 pointer-events-none"></div>
+        
+        <div id="cli-container" class="space-y-3 text-lg md:text-2xl lg:text-3xl max-w-4xl w-full mx-auto z-20 font-bold leading-relaxed shadow-green-500 drop-shadow-[0_0_8px_rgba(0,255,0,0.5)]">
+            <!-- Initial Command -->
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="text-green-700">></span>
+                <span>apt get-me there</span>
+                <button id="enter-btn" class="ml-2 opacity-60 hover:opacity-100 text-sm md:text-lg border-2 border-[#0f0] px-3 py-1 rounded-lg animate-pulse transition-opacity cursor-pointer flex items-center gap-2 bg-green-900/30 active:bg-green-700/50">
+                    Click Enter <span class="hidden md:inline">↵</span>
+                </button>
+            </div>
+            <!-- Text lines will be injected here via JS -->
+        </div>
+        <div class="max-w-4xl w-full mx-auto z-20 flex mt-1">
+            <span class="text-green-700 mr-2">></span>
+            <span id="cli-cursor-anim" class="inline-block w-4 h-6 md:h-8 bg-[#0f0] animate-pulse"></span>
+        </div>
+    </div>
+
+    <!-- Custom Cursor (Cute Dark Pink Pointer) -->
+    <!-- Disembunyikan di awal saat splash screen aktif -->
+    <div id="custom-cursor" class="fixed pointer-events-none z-[9999] transition-transform duration-100 ease-out top-0 left-0 origin-top-left hidden" style="transform: translate(0px, 0px);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="#be185d" stroke="#000000" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" class="drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+            <path d="M4 2 L4 22 L10 16 L15 23 L18 21 L13 14 L20 14 Z" />
+        </svg>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="p-6 flex justify-between items-center relative z-10 border-b-4 border-black bg-white">
+        <div class="text-3xl font-black tracking-tighter flex items-center gap-2">
+            <div class="w-10 h-10 bg-[#FFC900] border-4 border-black rounded-xl flex items-center justify-center animate-bounce">
+                <span class="text-xl">🍀</span>
+            </div>
+            Lucky.dev
+        </div>
+        <div class="hidden md:flex gap-6 font-bold text-lg">
+            <a href="#about" class="hover:text-[#FF90E8] transition-colors relative group">
+                About
+                <span class="absolute -bottom-1 left-0 w-0 h-1 bg-black transition-all group-hover:w-full"></span>
+            </a>
+            <a href="#skills" class="hover:text-[#22C55E] transition-colors relative group">
+                Skills
+                <span class="absolute -bottom-1 left-0 w-0 h-1 bg-black transition-all group-hover:w-full"></span>
+            </a>
+            <a href="#projects" class="hover:text-[#3B82F6] transition-colors relative group">
+                Projects
+                <span class="absolute -bottom-1 left-0 w-0 h-1 bg-black transition-all group-hover:w-full"></span>
+            </a>
+            <a href="#team" class="hover:text-[#FFC900] transition-colors relative group">
+                My Team
+                <span class="absolute -bottom-1 left-0 w-0 h-1 bg-black transition-all group-hover:w-full"></span>
+            </a>
+        </div>
+        <button class="bg-[#A78BFA] border-4 border-black px-6 py-2 rounded-xl font-bold brutal-shadow hidden md:block interaction-trigger">
+            Let's Talk!
+        </button>
+    </nav>
+
+    <main class="flex-grow">
+        
+        <!-- Hero Section -->
+        <section id="about" class="relative min-h-[85vh] flex items-center overflow-hidden pattern-bg">
+            <!-- Decorative background elements -->
+            <div class="absolute top-20 left-10 text-[#FF90E8] animate-spin-slow opacity-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div class="absolute bottom-20 right-20 text-[#22C55E] animate-float opacity-50">
+                <i data-lucide="code-2" class="w-12 h-12"></i>
+            </div>
+            
+            <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-12 relative z-10 w-full">
+                <!-- Left Content -->
+                <div class="flex-1 space-y-8 max-w-2xl">
+                    <div class="inline-block bg-[#FFC900] border-4 border-black px-4 py-2 rounded-full font-bold text-lg brutal-shadow-static animate-float-delayed transform -rotate-2">
+                        🚀 Available for work
+                    </div>
+                    
+                    <h1 class="text-5xl sm:text-6xl md:text-8xl font-black uppercase leading-[1.1] tracking-tight">
+                        <span class="inline-block animate-float">👋</span> Hi! I am <br/>
+                        
+                        <!-- Efek Blur gaya Threads (Tanpa teks Click Me & Tanpa Hover) -->
+                        <div id="name-reveal-container" class="relative inline-block mt-4 cursor-none interaction-trigger" onclick="revealName(event)">
+
+                            <!-- Teks Nama (Ter-blur pada awalnya, durasi transisi diperlambat jadi 1.5s) -->
+                            <div id="actual-name" class="flex items-center flex-wrap gap-x-4 mt-2 transition-all duration-[1500ms] ease-in-out blur-[12px] opacity-60 grayscale">
+                                <span class="relative z-10 bg-[#FF90E8] px-4 pt-2 pb-0 border-4 border-black rounded-2xl">
+                                    Lucky
+                                </span> 
+                                <span class="relative inline-block text-black">
+                                    Ardhika!
+                                </span>
+                            </div>
+
+                        </div>
+                    </h1>
+                    
+                    <p class="text-2xl font-bold text-gray-800 leading-relaxed border-l-8 border-[#3B82F6] pl-6 bg-white/50 backdrop-blur-sm py-2 rounded-r-xl mt-6">
+                        A Fullstack Developer crafting scalable web apps with a dash of cute & crazy designs. 
+                    </p>
+            
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <a href="#projects" class="bg-[#22C55E] text-white border-4 border-black px-8 py-4 rounded-xl font-black text-xl brutal-shadow flex items-center gap-2 group cursor-none interaction-trigger">
+                            See My Work 
+                            <i data-lucide="arrow-right" class="group-hover:translate-x-2 transition-transform"></i>
+                        </a>
+                        <a href="https://github.com/LuckyArdhika">
+                        <button class="bg-white text-black border-4 border-black px-8 py-4 rounded-xl font-black text-xl brutal-shadow flex items-center gap-2 interaction-trigger">
+                            <img src="https://cdn.simpleicons.org/github/000000" class="w-6 h-6" alt="GitHub"/> GitHub
+                        </button>
+                        </a>
+                    </div>
+                </div>
+            
+                <!-- Right Content - Picture -->
+                <div class="flex-1 flex justify-center relative mt-12 md:mt-0">
+                    <!-- Floating badge -->
+                    <div class="absolute -top-10 -right-4 md:-right-10 z-20 animate-float">
+                        <div class="relative flex items-center justify-center w-32 h-32">
+                            <div class="absolute inset-0 bg-[#A78BFA] rounded-full animate-spin-slow border-4 border-black border-dashed"></div>
+                            <div class="absolute bg-white border-4 border-black p-4 rounded-full font-black text-center text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                100%<br/>Pro 😎
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- Picture Container -->
+                    <div class="relative">
+                        <!-- Background decoration box -->
+                        <div class="absolute top-6 left-6 w-full h-full bg-[#3B82F6] border-4 border-black rounded-[2rem]"></div>
+                        
+                        <div class="bg-[#FFD1DC] border-4 border-black rounded-[2rem] w-[300px] h-[300px] md:w-[400px] md:h-[400px] relative z-10 overflow-hidden brutal-shadow-static flex items-end justify-center">
+                            <img 
+                                src="/images/main.jpg" 
+                                alt="Lucky Ardhika"
+                                class="w-[90%] h-[90%] object-contain drop-shadow-[0_10px_0_rgba(0,0,0,0.2)] animate-float-delayed"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section (Grid) -->
+        <section id="skills" class="py-24 bg-[#3B82F6] border-y-4 border-black relative">
+            <div class="max-w-7xl mx-auto px-6 relative z-10">
+                <div class="flex items-center gap-4 mb-16">
+                    <h2 class="text-3xl sm:text-5xl md:text-7xl font-black uppercase text-white drop-shadow-[4px_4px_0_#000]">My Skills</h2>
+                    <div class="flex-1 h-4 bg-black rounded-full ml-4 hidden md:block"></div>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="skills-grid">
+                    <!-- Javascript will generate the tech stack items here using real SVG icons -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-24 px-6 max-w-7xl mx-auto">
+            <div class="mb-16">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-4xl sm:text-5xl md:text-7xl font-black uppercase">My Work</h2>
+                    <div class="flex-1 h-4 bg-black rounded-full ml-4 hidden md:block"></div>
+                </div>
+                <!-- Slogan -->
+                <p class="text-lg sm:text-xl md:text-2xl font-bold text-gray-700 mt-6 inline-block bg-[#FFC900] px-4 py-2 border-4 border-black rounded-xl transform rotate-1">
+                    I treat my code like my mate.
+                </p>
+            </div>
+        
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- Project 1 -->
+                <div class="bg-[#FF90E8] border-4 border-black rounded-[2rem] p-8 brutal-shadow flex flex-col group cursor-none interaction-trigger">
+                    <div class="flex gap-2 mb-6 border-b-4 border-black pb-4">
+                        <div class="w-4 h-4 rounded-full bg-white border-2 border-black"></div>
+                        <div class="w-4 h-4 rounded-full bg-white border-2 border-black"></div>
+                        <div class="w-4 h-4 rounded-full bg-white border-2 border-black"></div>
+                    </div>
+                    <h3 class="text-3xl font-black mb-4 group-hover:underline decoration-4 underline-offset-4">XXX [CONFIDENTAl]</h3>
+                    <p class="font-bold text-lg mb-8 flex-1">Sorry, for some reason this project is confidental right now. Hit my inbox if you want to see it</p>
+                    <div class="flex flex-wrap gap-2 mb-8">
+                        <span class="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold text-sm">NestJS</span>
+                        <span class="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold text-sm">ReactJS</span>
+                        <span class="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold text-sm">PostgreSQL</span>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="bg-[#A7F3D0] border-4 border-black rounded-[2rem] p-8 brutal-shadow flex flex-col group cursor-none interaction-trigger">
+                    <div class="flex gap-2 mb-6 border-b-4 border-black pb-4">
+                        <div class="w-4 h-4 rounded-full bg-white border-2 border-black"></div>
+                        <div class="w-4 h-4 rounded-full bg-white border-2 border-black"></div>
+                        <div class="w-4 h-4 rounded-full bg-white border-2 border-black"></div>
+                    </div>
+                    <h3 class="text-3xl font-black mb-4 group-hover:underline decoration-4 underline-offset-4">Barge Tracker</h3>
+                    <p class="font-bold text-lg mb-8 flex-1">Barge Tracker is a platform for manage and track barge for coal delivery from supplier to customer, ensuring step by step has completed securely to match operatioal procedure (Barge load, departure, barge unload, etc...)</p>
+                    <div class="flex flex-wrap gap-2 mb-8">
+                        <span class="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold text-sm">NestJs</span>
+                        <span class="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold text-sm">VueJs</span>
+                        <span class="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold text-sm">PostgreSQL</span>
+                    </div>
+                    <button class="bg-black text-white w-full py-4 rounded-xl font-black text-xl flex justify-center items-center gap-2 group-hover:bg-white group-hover:text-black border-4 border-black transition-colors cursor-none">
+                        Private Internal Project <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="bg-[#FFC900] border-4 border-black rounded-[2rem] p-8 brutal-shadow flex flex-col group cursor-none interaction-trigger">
+                    <div class="flex gap-2 mb-6 border-b-4 border-black pb-4">
+                        <div class="w-4 h-4 rounded-full bg-white border-2 border-black"></div>
+                        <div class="w-4 h-4 rounded-full bg-white border-2 border-black"></div>
+                        <div class="w-4 h-4 rounded-full bg-white border-2 border-black"></div>
+                    </div>
+                    <h3 class="text-3xl font-black mb-4 group-hover:underline decoration-4 underline-offset-4">Konek ID</h3>
+                    <p class="font-bold text-lg mb-8 flex-1">Konek ID is a donation platform to cover people who need help by crowdfunding. In the App, you can read news that integrated with wordpress, create your own campaign and make a deposit to be used for donation or to buy products from Konek Store</p>
+                    <div class="flex flex-wrap gap-2 mb-8">
+                        <span class="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold text-sm">NestJs</span>
+                        <span class="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold text-sm">VueJs</span>
+                        <span class="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold text-sm">PostgreSQL</span>
+                    </div>
+                    <a target="__blank" href="https://play.google.com/store/apps/details?id=com.ekasatechnology.kcom">
+                    <button class="bg-black text-white w-full py-4 rounded-xl font-black text-xl flex justify-center items-center gap-2 group-hover:bg-white group-hover:text-black border-4 border-black transition-colors cursor-none">
+                        View Project<i data-lucide="external-link" class="w-5 h-5"></i>
+                    </button>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- My Teams (The Pair Programmers) -->
+        <section id="team" class="py-24 bg-[#FFC900] border-y-4 border-black relative overflow-hidden">
+            <div class="pattern-bg absolute inset-0 opacity-20"></div>
+            <div class="max-w-7xl mx-auto px-6 relative z-10">
+                
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl sm:text-4xl md:text-6xl font-black uppercase inline-block bg-white border-4 border-black px-6 sm:px-8 py-3 sm:py-4 rounded-2xl brutal-shadow transform -rotate-1">
+                        My Pair Programmers
+                    </h2>
+                    <p class="text-lg sm:text-2xl font-bold mt-6 bg-black text-white inline-block px-4 py-1 rounded-lg">
+                        Massive thanks to my "Team" 🤝
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+                    
+                    <!-- Gemini -->
+                    <div class="bg-white border-4 border-black px-8 py-6 rounded-3xl brutal-shadow flex flex-col items-center gap-2 transform -rotate-3 hover:-translate-y-2 transition-transform">
+                        <img src="https://cdn.simpleicons.org/googlegemini/1E88E5" class="w-16 h-16 animate-float" alt="Gemini" />
+                        <span class="font-black text-2xl">Gemini</span>
+                    </div>
+
+                    <!-- ChatGPT -->
+                    <div class="bg-[#10A37F] text-white border-4 border-black px-8 py-6 rounded-3xl brutal-shadow flex flex-col items-center gap-2 transform rotate-2 hover:-translate-y-2 transition-transform">
+                        <!-- Replaced SVG with the provided Icons8 image URL -->
+                        <img src="https://img.icons8.com/ios/100/chatgpt.png" class="w-16 h-16 animate-float-delayed filter invert" alt="ChatGPT" />
+                        <span class="font-black text-2xl">ChatGPT</span>
+                    </div>
+
+                    <!-- Claude -->
+                    <div class="bg-[#D97757] text-white border-4 border-black px-8 py-6 rounded-3xl brutal-shadow flex flex-col items-center gap-2 transform -rotate-1 hover:-translate-y-2 transition-transform">
+                        <!-- Changed anthropic to claude to get the correct product logo -->
+                        <img src="https://cdn.simpleicons.org/claude/FFFBEA" class="w-16 h-16 animate-float" alt="Claude" />
+                        <span class="font-black text-2xl">Claude</span>
+                    </div>
+
+                    <!-- Deepseek (Crossed out + joke tooltip) -->
+                    <div class="relative bg-white text-black border-4 border-black px-8 py-6 rounded-3xl brutal-shadow flex flex-col items-center gap-2 transform rotate-6 opacity-70 group hover:opacity-100 transition-all cursor-none interaction-trigger">
+                        <img src="https://cdn.simpleicons.org/deepseek/4D6BFE" class="w-16 h-16 animate-float-delayed" alt="DeepSeek" />
+                        <span class="font-black text-2xl">DeepSeek</span>
+                        
+                        <!-- The Big Red X -->
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div class="text-red-500 font-black text-9xl drop-shadow-[0_4px_0_rgba(0,0,0,1)] -rotate-12">X</div>
+                        </div>
+
+                        <!-- Hover Tooltip -->
+                        <div class="absolute -bottom-12 bg-white text-black text-lg font-bold px-4 py-2 border-4 border-black rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-20">
+                            Server busy rn 😂
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mini Game (Neo-Tetris) -->
+        <section id="game" class="py-24 bg-white border-y-4 border-black relative overflow-hidden">
+            <div class="pattern-bg absolute inset-0 opacity-10"></div>
+            <div class="max-w-5xl mx-auto px-6 relative z-10 flex flex-col items-center">
+                
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl sm:text-4xl md:text-6xl font-black uppercase inline-block bg-[#A7F3D0] border-4 border-black px-6 sm:px-8 py-3 sm:py-4 rounded-3xl brutal-shadow transform rotate-1">
+                        Take a Break! 🎮
+                    </h2>
+                    <p class="text-lg sm:text-xl font-bold mt-6 bg-black text-white inline-block px-4 py-2 rounded-lg transform -rotate-1">
+                        Play Neo-Tetris on my "Phone"!
+                    </p>
+                </div>
+
+                <!-- The Mobile Phone Container -->
+                <div class="bg-[#A78BFA] border-[6px] border-black p-3 sm:p-5 rounded-[2.5rem] w-full max-w-[260px] sm:max-w-[320px] mx-auto relative flex flex-col gap-3 sm:gap-4 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transform transition-transform hover:-translate-y-1">
+                    
+                    <!-- Phone Top Bar (Speaker & Camera & Score) -->
+                    <div class="relative flex justify-center items-center pt-2 pb-1 min-h-[24px]">
+                        <!-- Simple Text Score Top Left -->
+                        <div class="absolute left-1 top-1/2 -translate-y-1/2 font-black text-sm sm:text-base text-black">
+                            SCORE: <span id="tetris-score">0</span>
+                        </div>
+                        
+                        <!-- Speaker & Camera -->
+                        <div class="flex justify-center items-center gap-2 ml-16 sm:ml-20">
+                            <div class="w-8 sm:w-12 h-2 bg-black rounded-full opacity-80"></div>
+                            <div class="w-2.5 h-2.5 bg-black rounded-full opacity-80"></div>
+                        </div>
+                    </div>
+
+                    <!-- Phone Screen (Canvas) -->
+                    <div class="relative bg-white border-4 border-black brutal-shadow-static w-full aspect-[1/2] flex-shrink-0 overflow-hidden rounded-2xl cursor-none mx-auto">
+                        <canvas id="tetris-canvas" width="300" height="600" class="block w-full h-full object-contain"></canvas>
+                        
+                        <!-- Overlay -->
+                        <div id="tetris-overlay" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white p-4 text-center backdrop-blur-sm z-10">
+                            <span class="text-5xl mb-2 animate-float">👾</span>
+                            <h3 id="tetris-msg" class="text-2xl font-black mb-4 uppercase">Ready?</h3>
+                            <button id="tetris-start" class="bg-[#FF90E8] text-black border-4 border-black px-6 py-3 rounded-xl font-black text-lg brutal-shadow hover:-translate-y-1 transition-transform cursor-none w-full interaction-trigger select-none touch-manipulation">
+                                START
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Physical Controls (D-Pad) -->
+                    <div class="pb-1 sm:pb-2 flex justify-center">
+                        <div class="grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-[160px] sm:max-w-[200px] select-none">
+                            <div></div>
+                            <button id="btn-up" class="bg-white border-4 border-black aspect-square rounded-xl sm:rounded-2xl active:translate-y-2 active:shadow-none brutal-shadow-static text-2xl sm:text-3xl flex justify-center items-center cursor-none interaction-trigger touch-manipulation select-none">⬆️</button>
+                            <div></div>
+                            <button id="btn-left" class="bg-white border-4 border-black aspect-square rounded-xl sm:rounded-2xl active:translate-y-2 active:shadow-none brutal-shadow-static text-2xl sm:text-3xl flex justify-center items-center cursor-none interaction-trigger touch-manipulation select-none">⬅️</button>
+                            <button id="btn-down" class="bg-[#FF90E8] border-4 border-black aspect-square rounded-xl sm:rounded-2xl active:translate-y-2 active:shadow-none brutal-shadow-static text-2xl sm:text-3xl flex justify-center items-center cursor-none interaction-trigger touch-manipulation select-none">⬇️</button>
+                            <button id="btn-right" class="bg-white border-4 border-black aspect-square rounded-xl sm:rounded-2xl active:translate-y-2 active:shadow-none brutal-shadow-static text-2xl sm:text-3xl flex justify-center items-center cursor-none interaction-trigger touch-manipulation select-none">➡️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Instructions -->
+                <p class="font-bold text-gray-500 mt-12 text-center hidden md:block bg-gray-100 px-6 py-2 rounded-full border-2 border-black border-dashed">
+                    * ⌨️ Keyboard arrow keys are also fully supported!
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#3B82F6] border-t-4 border-black pt-16 pb-8 px-6 text-white overflow-hidden relative">
+        <div class="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
+            <h2 class="text-4xl sm:text-6xl md:text-9xl font-black uppercase tracking-tighter mb-8 text-white drop-shadow-[4px_4px_0_#000]">
+                Let's Collab!
+            </h2>
+            <p class="text-xl sm:text-2xl font-bold mb-12 bg-black px-6 py-2 rounded-2xl transform -rotate-2">
+                Available for new exciting opportunities.
+            </p>
+            
+            <div class="flex gap-6 mb-16">
+                <!-- Inline SVGs for all footer icons to prevent ad-blockers from hiding them -->
+                <a href="https://github.com/LuckyArdhika" class="bg-white text-black p-4 rounded-2xl border-4 border-black brutal-shadow hover:bg-[#FF90E8] transition-colors cursor-none interaction-trigger group">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000" class="w-8 h-8 group-hover:scale-110 transition-transform">
+                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                    </svg>
+                </a>
+                <a href="https://www.linkedin.com/in/lucky-ardhika" class="bg-white text-black p-4 rounded-2xl border-4 border-black brutal-shadow hover:bg-[#A7F3D0] transition-colors cursor-none interaction-trigger group">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#0077b5" class="w-8 h-8 group-hover:scale-110 transition-transform">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                </a>
+                <a href="mailto:luckymahadiningrat@gmail.com" class="bg-white text-black p-4 rounded-2xl border-4 border-black brutal-shadow hover:bg-[#FFC900] transition-colors cursor-none interaction-trigger group">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#EA4335" class="w-8 h-8 group-hover:scale-110 transition-transform">
+                        <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
+                    </svg>
+                </a>
+            </div>
+            
+            <div class="flex flex-col items-center gap-2">
+                <div class="font-bold text-lg bg-white text-black px-6 py-2 rounded-full border-4 border-black text-center">
+                    <span id="year"></span> Lucky Ardhika. Built with HTML, Tailwind, and way too much coffee ☕
+                </div>
+                <div class="text-sm font-bold text-white/80 mt-2">
+                    Bugs Fixed: 99+ | StackOverflow Tabs: 42 | Token Exhausted: ∞
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Set Current Year
+        document.getElementById('year').textContent = '© ' + new Date().getFullYear();
+
+        // Initialize Lucide Icons for small UI elements (arrows, external links)
+        lucide.createIcons();
+
+        // Generate Grid Items (Tech Stack using official simpleicons SVGs)
+        const techStack = [
+            { name: "NestJS", color: "bg-[#E0234E]", iconUrl: "https://cdn.simpleicons.org/nestjs/ffffff" },
+            { name: "ExpressJS", color: "bg-[#F0F0F0]", iconUrl: "https://cdn.simpleicons.org/express/000000" },
+            { name: "ReactJS", color: "bg-[#61DAFB]", iconUrl: "https://cdn.simpleicons.org/react/000000" },
+            { name: "VueJS", color: "bg-[#4FC08D]", iconUrl: "https://cdn.simpleicons.org/vuedotjs/ffffff" },
+            { name: "TypeORM", color: "bg-[#FE0902]", iconUrl: "https://cdn.simpleicons.org/typeorm/ffffff" },
+            { name: "PostgreSQL", color: "bg-[#336791]", iconUrl: "https://cdn.simpleicons.org/postgresql/ffffff" },
+            { name: "MongoDB", color: "bg-[#47A248]", iconUrl: "https://cdn.simpleicons.org/mongodb/ffffff" },
+            { name: "TailwindCSS", color: "bg-[#38B2AC]", iconUrl: "https://cdn.simpleicons.org/tailwindcss/ffffff" }
+        ];
+
+        const skillsGrid = document.getElementById('skills-grid');
+        let htmlString = '';
+        
+        techStack.forEach(tech => {
+            htmlString += `
+            <div class="p-6 border-4 border-black rounded-[2rem] brutal-shadow ${tech.color} text-black font-black flex flex-col items-center justify-center gap-4 text-xl transition-transform hover:-translate-y-2 group cursor-none interaction-trigger">
+                <span class="bg-black/10 p-4 rounded-xl border-4 border-black group-hover:rotate-12 transition-transform">
+                    <img src="${tech.iconUrl}" class="w-8 h-8 object-contain" alt="${tech.name}"/>
+                </span>
+                ${tech.name}
+            </div>
+            `;
+        });
+        skillsGrid.innerHTML = htmlString;
+
+        // Custom Cursor Logic
+        const cursor = document.getElementById('custom-cursor');
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            // Translasi kini tidak menggunakan -50% agar ujung panah tepat berada di titik klik
+            cursor.style.transform = `translate(${mouseX}px, ${mouseY}px) ${cursor.classList.contains('scale-150') ? 'scale(1.5) rotate(-10deg)' : 'scale(1) rotate(0deg)'}`;
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('a') || e.target.classList.contains('cursor-none') || e.target.classList.contains('interaction-trigger')) {
+                cursor.classList.add('scale-150');
+                cursor.style.transform = `translate(${mouseX}px, ${mouseY}px) scale(1.5) rotate(-10deg)`;
+            } else {
+                cursor.classList.remove('scale-150');
+                cursor.style.transform = `translate(${mouseX}px, ${mouseY}px) scale(1) rotate(0deg)`;
+            }
+        });
+        
+        document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
+        document.addEventListener('mouseenter', () => cursor.style.opacity = '1');
+
+        // Hacker CLI Splash Screen Logic
+        const splashTexts = [
+            "Downloading user metadata...",
+            "Searching personal information...",
+            "Fetching skills...",
+            "Loading projects...",
+            "Tidying up data..."
+        ];
+
+        let splashActive = true;
+
+        function initSplashScreen() {
+            const cliContainer = document.getElementById('cli-container');
+            const cliCursor = document.getElementById('cli-cursor-anim');
+            const enterBtn = document.getElementById('enter-btn');
+            
+            // Disable scroll during splash screen
+            document.body.style.overflow = 'hidden';
+
+            const startProcess = async () => {
+                if (!splashActive) return;
+                splashActive = false;
+                
+                // Initialize audio context on this first interaction
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                
+                playMechanicalClick(true);
+                
+                enterBtn.style.opacity = '0';
+                setTimeout(() => enterBtn.remove(), 300);
+
+                await new Promise(r => setTimeout(r, 400)); // Initial delay before typing
+
+                const typeText = async (text) => {
+                    const p = document.createElement('p');
+                    p.className = 'break-all';
+                    p.innerHTML = '<span class="text-green-700 mr-2">></span>';
+                    cliContainer.appendChild(p);
+                    
+                    const textSpan = document.createElement('span');
+                    p.appendChild(textSpan);
+
+                    for (let i = 0; i < text.length; i++) {
+                        textSpan.textContent += text[i];
+                        
+                        // Play a soft tick sound for each letter typed
+                        playMechanicalClick(true, 0.15);
+
+                        // Random typing speed delay
+                        await new Promise(r => setTimeout(r, 20 + Math.random() * 40)); 
+                    }
+                    // Pause after completing line
+                    await new Promise(r => setTimeout(r, 400)); 
+                };
+
+                for (const text of splashTexts) {
+                    await typeText(text);
+                }
+
+                // Dramatic pause before granting access
+                await new Promise(r => setTimeout(r, 500));
+                const p = document.createElement('p');
+                p.className = 'text-white font-black mt-6 animate-pulse text-2xl md:text-4xl';
+                p.textContent = "ACCESS GRANTED";
+                cliContainer.appendChild(p);
+                
+                playMechanicalClick(true, 0.8); // Loud click on finish
+
+                // Wait a moment so user can read it
+                await new Promise(r => setTimeout(r, 800));
+
+                const splashScreen = document.getElementById('hacker-splash');
+                // Trigger the violent glitch-out animation
+                splashScreen.classList.add('glitch-out');
+
+                // Cleanup & Show Real Website after animation completes
+                setTimeout(() => {
+                    splashScreen.remove();
+                    document.body.style.overflow = ''; // Restore scrolling
+                    document.getElementById('custom-cursor').classList.remove('hidden'); // Show custom pink cursor
+                }, 600); // matches the 0.6s animation duration
+            };
+
+            // Event Listeners to trigger the terminal
+            enterBtn.addEventListener('click', startProcess);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && splashActive) {
+                    startProcess();
+                }
+            });
+        }
+
+        // Run the splash sequence setup on window load
+        window.addEventListener('load', initSplashScreen);
+
+        // Reliable Native Mouse Click Sound (No external URLs / CORS issues)
+        let audioCtx;
+
+        function playMechanicalClick(isDown, volume = 0.8) {
+            // Initialize AudioContext on first interaction
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            // Create a tiny burst of noise (20ms)
+            const bufferSize = audioCtx.sampleRate * 0.02;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            
+            // Filter the noise to sound like a plastic switch
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = isDown ? 3000 : 4000; // slightly higher pitch on release
+            filter.Q.value = 1.5;
+            
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(volume, audioCtx.currentTime); // Dynamic Volume
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.015); // Fast decay
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            noise.start();
+        }
+
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.classList.add('water-ripple');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 1000);
+        }
+
+        // Global Mouse & Touch Events (Sound + Water Ripple)
+        document.addEventListener('mousedown', (event) => {
+            playMechanicalClick(true);
+            createRipple(event.pageX, event.pageY);
+        });
+        document.addEventListener('mouseup', () => playMechanicalClick(false));
+
+        document.addEventListener('touchstart', (event) => {
+            playMechanicalClick(true);
+            const touch = event.touches[0];
+            createRipple(touch.pageX, touch.pageY);
+        }, { passive: true });
+        document.addEventListener('touchend', () => playMechanicalClick(false), { passive: true });
+
+        // --- Neo-Tetris Game Logic ---
+        const tetrisCanvas = document.getElementById('tetris-canvas');
+        const tetrisCtx = tetrisCanvas.getContext('2d');
+        const scoreElement = document.getElementById('tetris-score');
+        const startBtn = document.getElementById('tetris-start');
+        const overlay = document.getElementById('tetris-overlay');
+        const msgElement = document.getElementById('tetris-msg');
+
+        const ROWS = 20;
+        const COLS = 10;
+        const BLOCK_SIZE = 30; // 300 width / 10 cols
+
+        // Tetris Colors matching the portfolio's palette
+        const TETRIS_COLORS = [
+            '#FFFFFF', // 0: empty
+            '#FF90E8', // 1: pink (I)
+            '#3B82F6', // 2: blue (J)
+            '#22C55E', // 3: green (L)
+            '#FFC900', // 4: yellow (O)
+            '#A78BFA', // 5: purple (S)
+            '#E0234E', // 6: red (T)
+            '#38B2AC'  // 7: teal (Z)
+        ];
+
+        // Tetromino matrices
+        const PIECES = [
+            [],
+            [[0,0,0,0], [1,1,1,1], [0,0,0,0], [0,0,0,0]], // I
+            [[2,0,0], [2,2,2], [0,0,0]], // J
+            [[0,0,3], [3,3,3], [0,0,0]], // L
+            [[4,4], [4,4]], // O
+            [[0,5,5], [5,5,0], [0,0,0]], // S
+            [[0,6,0], [6,6,6], [0,0,0]], // T
+            [[7,7,0], [0,7,7], [0,0,0]]  // Z
+        ];
+
+        let board = [];
+        let player = { pos: {x: 0, y: 0}, matrix: null, score: 0 };
+        let dropCounter = 0;
+        let dropInterval = 1000;
+        let lastTime = 0;
+        let gameActive = false;
+        let animationId;
+
+        // Create empty board
+        function createMatrix(w, h) {
+            const matrix = [];
+            while (h--) { matrix.push(new Array(w).fill(0)); }
+            return matrix;
+        }
+
+        function createPiece(type) {
+            return PIECES[type];
+        }
+
+        function drawBlock(x, y, colorIndex) {
+            tetrisCtx.fillStyle = TETRIS_COLORS[colorIndex];
+            tetrisCtx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            
+            // Neo-brutalism thick borders
+            tetrisCtx.strokeStyle = '#000';
+            tetrisCtx.lineWidth = 3;
+            tetrisCtx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            
+            // Cute inner highlight reflection
+            tetrisCtx.fillStyle = 'rgba(255,255,255,0.4)';
+            tetrisCtx.fillRect(x * BLOCK_SIZE + 4, y * BLOCK_SIZE + 4, 8, 8);
+            tetrisCtx.fillStyle = 'rgba(0,0,0,0.1)';
+            tetrisCtx.fillRect(x * BLOCK_SIZE + 20, y * BLOCK_SIZE + 20, 6, 6);
+        }
+
+        function drawMatrix(matrix, offset) {
+            matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        drawBlock(x + offset.x, y + offset.y, value);
+                    }
+                });
+            });
+        }
+
+        function draw() {
+            // Fill background
+            tetrisCtx.fillStyle = '#F0F0F0';
+            tetrisCtx.fillRect(0, 0, tetrisCanvas.width, tetrisCanvas.height);
+            
+            // Draw grid dots for aesthetics
+            tetrisCtx.fillStyle = '#D4D4D8';
+            for(let i=0; i<COLS; i++) {
+                for(let j=0; j<ROWS; j++) {
+                    tetrisCtx.fillRect(i*BLOCK_SIZE + BLOCK_SIZE/2 - 1, j*BLOCK_SIZE + BLOCK_SIZE/2 - 1, 2, 2);
+                }
+            }
+
+            drawMatrix(board, {x: 0, y: 0});
+            if(player.matrix) {
+                drawMatrix(player.matrix, player.pos);
+            }
+        }
+
+        function merge(board, player) {
+            player.matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        board[y + player.pos.y][x + player.pos.x] = value;
+                    }
+                });
+            });
+        }
+
+        function collide(board, player) {
+            const m = player.matrix;
+            const o = player.pos;
+            for (let y = 0; y < m.length; ++y) {
+                for (let x = 0; x < m[y].length; ++x) {
+                    if (m[y][x] !== 0 && (board[y + o.y] && board[y + o.y][x + o.x]) !== 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function playerDrop() {
+            player.pos.y++;
+            if (collide(board, player)) {
+                player.pos.y--;
+                merge(board, player);
+                playerReset();
+                arenaSweep();
+            }
+            dropCounter = 0;
+        }
+
+        function playerMove(dir) {
+            player.pos.x += dir;
+            if (collide(board, player)) {
+                player.pos.x -= dir;
+            }
+        }
+
+        function playerRotate(dir) {
+            const pos = player.pos.x;
+            let offset = 1;
+            rotate(player.matrix, dir);
+            while (collide(board, player)) {
+                player.pos.x += offset;
+                offset = -(offset + (offset > 0 ? 1 : -1));
+                if (offset > player.matrix[0].length) {
+                    rotate(player.matrix, -dir);
+                    player.pos.x = pos;
+                    return;
+                }
+            }
+        }
+
+        function rotate(matrix, dir) {
+            for (let y = 0; y < matrix.length; ++y) {
+                for (let x = 0; x < y; ++x) {
+                    [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+                }
+            }
+            if (dir > 0) {
+                matrix.forEach(row => row.reverse());
+            } else {
+                matrix.reverse();
+            }
+        }
+
+        function playerReset() {
+            const pieces = '1234567';
+            player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+            player.pos.y = 0;
+            player.pos.x = (Math.floor(COLS / 2)) - (Math.floor(player.matrix[0].length / 2));
+            
+            // Game Over Check
+            if (collide(board, player)) {
+                gameOver();
+            }
+        }
+
+        function arenaSweep() {
+            let rowCount = 1;
+            outer: for (let y = board.length - 1; y > 0; --y) {
+                for (let x = 0; x < board[y].length; ++x) {
+                    if (board[y][x] === 0) {
+                        continue outer;
+                    }
+                }
+                const row = board.splice(y, 1)[0].fill(0);
+                board.unshift(row);
+                ++y;
+                player.score += rowCount * 100;
+                rowCount *= 2; // Multiplier for multiple lines
+                dropInterval = Math.max(100, 1000 - (player.score / 10)); // Speed up
+            }
+            updateScore();
+        }
+
+        function updateScore() {
+            scoreElement.innerText = player.score;
+        }
+
+        function gameOver() {
+            gameActive = false;
+            cancelAnimationFrame(animationId);
+            overlay.classList.remove('hidden');
+            msgElement.innerText = "GAME OVER!";
+            startBtn.innerText = "PLAY AGAIN";
+        }
+
+        function startGame() {
+            board = createMatrix(COLS, ROWS);
+            player.score = 0;
+            dropInterval = 1000;
+            updateScore();
+            playerReset();
+            gameActive = true;
+            overlay.classList.add('hidden');
+            lastTime = performance.now();
+            update(lastTime);
+        }
+
+        // Draw initial static board before playing
+        board = createMatrix(COLS, ROWS);
+        draw();
+
+        function update(time = 0) {
+            if (!gameActive) return;
+            const deltaTime = time - lastTime;
+            lastTime = time;
+            dropCounter += deltaTime;
+            if (dropCounter > dropInterval) {
+                playerDrop();
+            }
+            draw();
+            animationId = requestAnimationFrame(update);
+        }
+
+        // Keyboard Controls
+        document.addEventListener('keydown', event => {
+            if (!gameActive) return;
+            
+            // Prevent scrolling when pressing arrow keys in-game
+            if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(event.code) > -1) {
+                event.preventDefault();
+            }
+
+            if (event.keyCode === 37) { playerMove(-1); } // Left
+            else if (event.keyCode === 39) { playerMove(1); } // Right
+            else if (event.keyCode === 40) { playerDrop(); } // Down
+            else if (event.keyCode === 38) { playerRotate(1); } // Up
+        });
+
+        // Touch / Click Controls for on-screen buttons (Highly optimized for mobile play)
+        function bindTetrisControl(id, action) {
+            const btn = document.getElementById(id);
+            
+            const handlePress = (e) => {
+                e.preventDefault(); // Mencegah layar bergeser/scrolling/zoom saat sedang main di HP
+                if (gameActive) action();
+            };
+
+            btn.addEventListener('touchstart', handlePress, { passive: false });
+            btn.addEventListener('mousedown', handlePress);
+        }
+
+        bindTetrisControl('btn-left', () => playerMove(-1));
+        bindTetrisControl('btn-right', () => playerMove(1));
+        bindTetrisControl('btn-down', () => playerDrop());
+        bindTetrisControl('btn-up', () => playerRotate(1));
+        
+        startBtn.addEventListener('click', startGame);
+        // Add touch support for start button so it responds instantly on mobile
+        startBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startGame();
+        }, { passive: false });
+
+        // Logika Mengungkapkan Nama (Efek Blur Threads)
+        function revealName(event) {
+            const actualName = document.getElementById('actual-name');
+            const container = document.getElementById('name-reveal-container');
+            
+            if (actualName && container.onclick !== null) {
+                // Hapus class blur dan kembalikan warna & kejelasan asli secara perlahan
+                actualName.classList.remove('blur-[12px]', 'opacity-60', 'grayscale');
+                actualName.classList.add('blur-0', 'opacity-100', 'grayscale-0');
+                
+                // Hapus trigger kursor ajaib agar tidak bereaksi lagi setelah diklik
+                container.classList.remove('interaction-trigger');
+                container.onclick = null;
+            }
+        }
+    </script>
+</body>
+</html>
